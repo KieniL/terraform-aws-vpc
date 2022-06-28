@@ -1,0 +1,30 @@
+name: sast scanning
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test_checkov:
+    needs: inital-setup
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run checkov
+      run: |
+        docker run --rm -t \
+        -v "$(pwd):/terraform" \
+        bridgecrew/checkov \
+        --quiet \
+        --compact \
+        --d /terraform \
+        --output junitxml \
+        --soft-fail > checkov.xml
+    
+    - name: upload checkov testresult
+      uses: actions/upload-artifact@master
+      with:
+        name: checkov
+        path: ./checkov.xml
+        if-no-files-found: error
