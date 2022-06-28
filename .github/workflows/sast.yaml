@@ -22,10 +22,18 @@ jobs:
         --directory /terraform \
         --output junitxml \
         --soft-fail > checkov.xml
+
+    - name: Run tfsec
+      run: |
+        docker run --rm -t \
+        -v "$(pwd):/terraform" \
+        aquasec/tfsec \
+        --format junit
+        /src > tfsec.xml
     
-    - name: upload checkov testresult
+    - name: upload testresults
       uses: actions/upload-artifact@master
       with:
-        name: checkov
-        path: ./checkov.xml
+        name: sast
+        path: ./*.xml
         if-no-files-found: error
