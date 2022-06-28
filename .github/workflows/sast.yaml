@@ -6,7 +6,6 @@ on:
 
 jobs:
   test_checkov:
-    needs: inital-setup
     runs-on: ubuntu-latest
     
     steps:
