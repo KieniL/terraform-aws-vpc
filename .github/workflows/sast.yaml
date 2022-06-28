@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  test_checkov:
+  checkov_scanning:
     runs-on: ubuntu-latest
     
     steps:
@@ -23,14 +23,26 @@ jobs:
         --output junitxml \
         --soft-fail > checkov.xml
 
+  tfsec_scanning:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+
     - name: Run tfsec
       run: |
         docker run --rm -t \
         -v "$(pwd):/terraform" \
         aquasec/tfsec \
         --format junit
-        /src > tfsec.xml
+        /terraform > tfsec.xml
     
+  upload_sast:
+    needs: [tfsec_scanning, checkov_scanning]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
     - name: upload testresults
       uses: actions/upload-artifact@master
       with:
