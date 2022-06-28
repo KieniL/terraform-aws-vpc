@@ -32,10 +32,10 @@ jobs:
     - name: Run tfsec
       run: |
         docker run --rm -t \
-        -v "$(pwd):/terraform" \
+        -v "$(pwd):/src" \
         aquasec/tfsec \
         --format junit
-        /terraform > tfsec.xml
+        /src > tfsec.xml
     
   upload_sast:
     needs: [tfsec_scanning, checkov_scanning]
