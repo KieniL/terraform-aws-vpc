@@ -34,7 +34,7 @@ jobs:
         docker run --rm -t \
         -v "$(pwd):/src" \
         aquasec/tfsec \
-        /src
+        /src \
         --format junit > tfsec.xml
     
   upload_sast:
